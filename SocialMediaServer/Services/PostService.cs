@@ -11,7 +11,11 @@ namespace SocialMediaServer.Services
         // 構造函數：初始化連線
         public PostService(IOptions<MongoDBSettings> postDatabaseSetting)
         {
+            // 建立單一 Client (連線池) -> 取得 Database -> 取得 Collection
+            var mongoClient = new MongoClient(postDatabaseSetting.Value.ConnectionString);
+            var mongoDatabase = mongoClient.GetDatabase(postDatabaseSetting.Value.DatabaseName);
 
+            _postsCollection = mongoDatabase.GetCollection<Post>(postDatabaseSetting.Value.CollectionName);
         }
 
         // 取得所有貼文的方法
